@@ -19,6 +19,8 @@ class Student(Model):
     studentID = IntegerField(unique = True)
     firstName = CharField()
     lastName = CharField()
+    iep = BooleanField(default=False)
+    ell = BooleanField(default=False)
     screenerScore = IntegerField()
     decodingScore = IntegerField()
     encodingScore = IntegerField()

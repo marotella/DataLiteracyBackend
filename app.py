@@ -1,5 +1,7 @@
-from flask import Flask, g
+from flask import Flask, g, request
 import models
+from flask_cors import CORS
+from resources.users import users
 
 DEBUG = True
 PORT = 8000
@@ -15,10 +17,15 @@ def before_request():
     g.db.connect()
     
 @app.after_request
-def after_request():
-    """Connect to the database before each request."""
-    g.db = models.DATABASE
-    g.db.connect()
+def after_request(response):
+    """Close to the database before each request."""
+    if not g.db.is_closed():
+        g.db.close()
+        return response
+
+CORS(users, origins = ['http://localhost:3000'], supports_credentials=True)
+
+app.register_blueprint(users, url_prefix='api/v1/users')
     
 
 ## The default URL 
