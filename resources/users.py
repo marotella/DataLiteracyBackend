@@ -54,5 +54,16 @@ def register_user():
 
 
 ##SHOW/CURRENT USER
+@users.route("/current_user", methods=["GET"])
+@login_required
+def current_user():
+    user_dict = model_to_dict(current_user)
+    return jsonify(data=user_dict, status={"code": 200, "message": "Current user retrieved"})
 
 ## LOGOUT
+@users.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    logout_user()
+    return jsonify(data={}, status={"code": 200, "message": "Logout successful"})
+ 
