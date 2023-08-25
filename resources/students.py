@@ -44,6 +44,16 @@ def create_studnet():
 
         
 ## DELETE
+@students.route("/student/<int:student_id>", methods=["DELETE"])
+@login_required
+def delete_student(student_id):
+    try:
+        student= models.Student.get((models.Student.id == student_id)& (models.Student.user == current_user))
+        student.delete_instance()
+        return jsonify(data={}, status={"code": "201", "message": "Successfully deleted student"})
+    except models.DoesNotExist:
+        return jsonify(data={}, status={"code": 404, "message": "Student not found"})
+
 
 ## UPDATE
 
