@@ -7,7 +7,7 @@ import models
 students = Blueprint('students', __name__)
 
 ## INDEX
-@students.route("/students", methods=["GET"])
+@students.route("/", methods=["GET"])
 @login_required
 def get_all_students():
     payload= request.get_json()
@@ -26,6 +26,7 @@ def create_student():
     payload = request.get_json()
     try:
         student = models.Student.create(
+            user=current_user.id,  # Associate the student with the logged-in user
             studentID=payload['studentID'],
             firstName=payload['firstName'],
             lastName=payload['lastName'],

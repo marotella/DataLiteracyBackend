@@ -43,7 +43,7 @@ class PlacementCriteria(Model):
 
 def initialize():
     DATABASE.connect()
-    # DATABASE.drop_tables([Ingredient], safe=True)
+    # DATABASE.drop_tables([User, PlacementCriteria, Student], safe=True)
 
     DATABASE.create_tables([User, PlacementCriteria, Student], safe=True)
     print("Connected to the database, tables created.")
