@@ -20,7 +20,7 @@ def get_all_students():
     
 
 ## CREATE
-@students.route("/students", methods=["POST"])
+@students.route("/", methods=["POST"])
 @login_required
 def create_student():
     payload = request.get_json()
@@ -42,7 +42,7 @@ def create_student():
 
         
 ## DELETE
-@students.route("/student/<int:student_id>", methods=["DELETE"])
+@students.route("/<int:student_id>", methods=["DELETE"])
 @login_required
 def delete_student(student_id):
     try:
@@ -54,7 +54,7 @@ def delete_student(student_id):
 
 
 ## UPDATE
-@students.route("/student/<int:student_id>", methods=["PUT"])
+@students.route("/<int:student_id>", methods=["PUT"])
 @login_required
 def update_student(student_id):
     payload = request.get_json()
