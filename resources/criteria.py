@@ -40,3 +40,26 @@ def create_criteria():
         return jsonify(data={}, status={"code":400, "message": str(e)})
     
         
+## DELETE
+@placementCriteria.routes("/<int:criteria_id>", methods = ["DELETE"])
+@login_required
+def delete_criteria(criteria_id):
+    try:
+        criteria= models.PlacementCriteria.get((models.PlacementCriteria.id == criteria_id)&(models.PlacementCriteria.user == current_user))
+        criteria.delete_instance()
+        return jsonify(data={}, status={"code":201, "message":"Successfully deleted criteria"})
+    except models.DoesNotExist:
+        return jsonify(data={}, status={"code": 404, "message":"Criteria not found."})
+    
+    
+## UPDATE
+@placementCriteria.route("/<int:criteria_id>", methods=["PUT"])
+@login_required
+def update_placment_criteria(criteria_id):
+    payload = request.get_json()
+    try:
+        criteria = models.PlacementCriteria.get((models.PlacementCriteria.id == criteria_id)&(models.PlacementCriteria.user == current_user))
+        criteria.update(**payload).execute()
+        updated_criteria = model_to_dict(update_criteria)
+        criteria_dict = 
+        
