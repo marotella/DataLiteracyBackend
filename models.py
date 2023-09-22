@@ -40,11 +40,19 @@ class PlacementCriteria(Model):
     
     class Meta:
         database = DATABASE
+        
+class PlacementMatch(Model):
+    student = ForeignKeyField(Student)
+    intervention = CharField()
+    score_difference = IntegerField()
+
+    class Meta:
+        database = DATABASE
 
 def initialize():
     DATABASE.connect()
     # DATABASE.drop_tables([User, PlacementCriteria, Student], safe=True)
 
-    DATABASE.create_tables([User, PlacementCriteria, Student], safe=True)
+    DATABASE.create_tables([User, PlacementCriteria, Student, PlacementMatch], safe=True)
     print("Connected to the database, tables created.")
     DATABASE.close()
