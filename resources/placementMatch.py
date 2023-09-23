@@ -6,7 +6,7 @@ from models import Student, PlacementCriteria, PlacementMatch
 match = Blueprint('placement', __name__)
 
 #MATCH
-@match.route("/match", methods=["POST"])
+@match.route("/", methods=["POST"])
 @login_required
 def match_student():
     try:
@@ -16,7 +16,7 @@ def match_student():
         
         #get it from the database
         student= Student.get(
-            (student_id == student_id) & (Student.user == current.user)
+            (student_id == student_id) & (Student.user == current_user)
         )
         #get all placement criteria
         criteria_list = PlacementCriteria.select()
@@ -44,7 +44,7 @@ def match_student():
         )
                 
         return jsonify({
-            "best_fit_match": best_fit_match.__annotations__,
+            "best_fit_match": best_fit_match,
             "min_score_difference": min_score_difference,
             "match_id": intervention_match.id
         })

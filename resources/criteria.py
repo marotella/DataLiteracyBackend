@@ -41,7 +41,7 @@ def create_criteria():
     
         
 ## DELETE
-@placementCriteria.routes("/<int:criteria_id>", methods = ["DELETE"])
+@placementCriteria.route("/<int:criteria_id>", methods = ["DELETE"])
 @login_required
 def delete_criteria(criteria_id):
     try:

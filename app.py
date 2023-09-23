@@ -4,6 +4,7 @@ from flask_cors import CORS
 from resources.users import users
 from resources.students import students
 from resources.criteria import placementCriteria
+from resources.placementMatch import match
 from flask_login import LoginManager
 import os
 
@@ -37,11 +38,12 @@ login_manager = LoginManager(app)
 CORS(users, origins = ['http://localhost:3000'], supports_credentials=True)
 CORS(placementCriteria, origins = ['http://localhost:3000'], supports_credentials=True)
 CORS(students, origins = ['http://localhost:3000'], supports_credentials=True)
-
+CORS(match, origins = ['https://localhost:3000'], supports_credentials = True)
 
 app.register_blueprint(users, url_prefix='/api/v1/users')
 app.register_blueprint(students, url_prefix='/api/v1/students')
 app.register_blueprint(placementCriteria, url_prefix='/api/v1/criteria')  
+app.register_blueprint(match, url_prefix="/api/v1/match" )
 
 ## The default URL 
 @app.route('/')
