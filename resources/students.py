@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_required, current_user, logout_user
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from playhouse.shortcuts import model_to_dict
 from peewee import DoesNotExist
 import models
@@ -8,11 +8,12 @@ students = Blueprint('students', __name__)
 
 ## INDEX
 @students.route("/", methods=["GET"])
-@login_required
+@jwt_required
 def get_all_students():
-    payload= request.get_json()
+    # payload= request.get_json()
+    current_user_id = get_jwt_identity()
     try:
-        students = [model_to_dict(student) for student in current_user.students]
+        students = [model_to_dict(student) for student in models.Student.select().where(models.Student.user == current_user_id )]
         return jsonify(data=students, status={"code": 200, "message": "Successfully retrieved students"})
     except Exception as e:
         return jsonify(data={}, status={"code": 400, "message": str(e)})
@@ -21,12 +22,13 @@ def get_all_students():
 
 ## CREATE
 @students.route("/", methods=["POST"])
-@login_required
+@jwt_required
 def create_student():
     payload = request.get_json()
+    current_user_id = get_jwt_identity()
     try:
         student = models.Student.create(
-            user=current_user.id,  # Associate the student with the logged-in user
+            user=current_user_id,  # Associate the student with the logged-in user
             studentID=payload['studentID'],
             firstName=payload['firstName'],
             lastName=payload['lastName'],
