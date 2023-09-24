@@ -7,7 +7,7 @@ from resources.criteria import placementCriteria
 from resources.placementMatch import match
 from flask_login import LoginManager
 import os
-
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
 
 
 SECRET_KEY = 'azore_lou_cow'
@@ -17,6 +17,8 @@ PORT = 8000
 ## Initialize site
 app = Flask(__name__)
 app.secret_key= SECRET_KEY
+app.config['JWT_SECRET_KEY'] = 'cow_lou_azore'
+jwt = JWTManager(app)
 
 ##Database connection:
 @app.before_request
