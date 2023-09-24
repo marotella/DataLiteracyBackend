@@ -46,10 +46,11 @@ def create_student():
         
 ## DELETE
 @students.route("/<int:student_id>", methods=["DELETE"])
-@login_required
+@jwt_required()
 def delete_student(student_id):
+    current_user_id = get_jwt_identity()
     try:
-        student= models.Student.get((models.Student.id == student_id)& (models.Student.user == current_user))
+        student= models.Student.get((models.Student.id == student_id)& (models.Student.user == current_user_id))
         student.delete_instance()
         return jsonify(data={}, status={"code": 201, "message": "Successfully deleted student"})
     except models.DoesNotExist:
@@ -58,15 +59,15 @@ def delete_student(student_id):
 
 ## UPDATE
 @students.route("/<int:student_id>", methods=["PUT"])
-@login_required
+@jwt_required()
 def update_student(student_id):
     payload = request.get_json()
+    current_user_id = get_jwt_identity()
     try:
-        student= models.Student.get((models.Student.id == student_id) & (models.Student.user == current_user))
+        student= models.Student.get((models.Student.id == student_id) & (models.Student.user == current_user_id))
         student.update(**payload).execute()
-        updated_student = model_to_dict(update_student)
-        student_dict = model_to_dict(update_student)
-        return jsonify(data=student_dict, status={"code": 200, "message": "Student updated"})
+        updated_student = model_to_dict(student)
+        return jsonify(data=updated_student, status={"code": 200, "message": "Student updated"})
     except models.DoesNotExist:
         return jsonify(data={}, status={"code": 404, "message": "Student not found"})
     except Exception as e:
