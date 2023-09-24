@@ -1,13 +1,11 @@
 import models 
 from flask import Blueprint, jsonify, request
-from flask_login import LoginManager, login_user, login_required, current_user, logout_user # Import user_loader
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from playhouse.shortcuts import model_to_dict
 from peewee import DoesNotExist
 
 
 users = Blueprint('users', __name__)
-
-login_manager = LoginManager()  # Create a LoginManager instance
 
 
 ##INDEX
@@ -29,9 +27,8 @@ def login():
     try:
         user=models.User.get(models.User.username == payload['username'])
         if user.password == payload["password"]:
-            login_user(user)
-            user_dict = model_to_dict(user)
-            return jsonify(data=user_dict, status={"code": 200, "message": "Login successful"})
+            access_token = create_access_token(identity=user.id)
+            return jsonify(access_token=access_token, status={"code": 200, "message": "Login successful"})
         else:
             return jsonify(data={}, status={"code": 401, "message": "Invalid credentials."})
     except DoesNotExist:
@@ -55,15 +52,17 @@ def register_user():
 
 ##SHOW/CURRENT USER
 @users.route("/current_user", methods=["GET"])
-@login_required
+@jwt_required()
 def current_user():
-    user_dict = model_to_dict(current_user)
+    current_user_id = get_jwt_identity()
+    user = models.User.get_by_id(current_user_id)
+    user_dict = model_to_dict(user)
     return jsonify(data=user_dict, status={"code": 200, "message": "Current user retrieved"})
 
-## LOGOUT
-@users.route("/logout", methods=["GET"])
-@login_required
-def logout():
-    logout_user()
-    return jsonify(data={}, status={"code": 200, "message": "Logout successful"})
+# ## LOGOUT
+# @users.route("/logout", methods=["GET"])
+# @login_required
+# def logout():
+#     logout_user()
+#     return jsonify(data={}, status={"code": 200, "message": "Logout successful"})
  
