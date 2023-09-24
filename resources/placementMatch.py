@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from flask_login import login_required, current_user
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from peewee import fn
 from models import Student, PlacementCriteria, PlacementMatch
 
@@ -7,8 +7,9 @@ match = Blueprint('placement', __name__)
 
 #MATCH
 @match.route("/", methods=["POST"])
-@login_required
+@jwt_required()
 def match_student():
+    current_user_id = get_jwt_identity()
     try:
         #pull student data from request
         data = request.get_json()
@@ -16,7 +17,7 @@ def match_student():
         
         #get it from the database
         student= Student.get(
-            (student_id == student_id) & (Student.user == current_user)
+            (student_id == student_id) & (Student.user == current_user_id)
         )
         #get all placement criteria
         criteria_list = PlacementCriteria.select()
