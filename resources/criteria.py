@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_required, current_user, logout_user
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from playhouse.shortcuts import model_to_dict
 from peewee import DoesNotExist
 import models
@@ -9,23 +9,26 @@ placementCriteria = Blueprint("criteria", __name__)
 
 #INDEX
 @placementCriteria.route("/", methods=["GET"])
-@login_required
+@jwt_required
 def get_all_critera():
     payload=request.get_json()
+    current_user_id = get_jwt_identity()
     try:
-        criteria = [model_to_dict(criteria) for criteria in current_user.placement_criteria]
+        criteria = [model_to_dict(criteria) for criteria in current_user_id.placement_criteria]
         return jsonify(data=criteria, status={"code":200, "message": "Successfully retrieved criteria"})
     except Exception as e:
         return jsonify(data={}, status={"code": 400, "message": str(e)})
     
 ## CREATE
 @placementCriteria.route("/", methods=["POST"])
-@login_required
+@jwt_required
 def create_criteria():
     payload = request.get_json()
+    current_user_id = get_jwt_identity()
+
     try:
         criteria = models.PlacementCriteria.create(
-        user=current_user.id,
+        user=current_user_id,
         interventionName = payload["interventionName"],
         screenerScoreMax = payload["screenerScoreMax"],
         decodingScoreMax = payload["decodingScoreMax"],
@@ -42,10 +45,12 @@ def create_criteria():
         
 ## DELETE
 @placementCriteria.route("/<int:criteria_id>", methods = ["DELETE"])
-@login_required
+@jwt_required
 def delete_criteria(criteria_id):
+    current_user_id = get_jwt_identity()
+
     try:
-        criteria= models.PlacementCriteria.get((models.PlacementCriteria.id == criteria_id)&(models.PlacementCriteria.user == current_user))
+        criteria= models.PlacementCriteria.get((models.PlacementCriteria.id == criteria_id)&(models.PlacementCriteria.user == current_user_id))
         criteria.delete_instance()
         return jsonify(data={}, status={"code":201, "message":"Successfully deleted criteria"})
     except models.DoesNotExist:
@@ -54,11 +59,13 @@ def delete_criteria(criteria_id):
     
 ## UPDATE
 @placementCriteria.route("/<int:criteria_id>", methods=["PUT"])
-@login_required
+@jwt_required
 def update_criteria(criteria_id):
     payload = request.get_json()
+    current_user_id = get_jwt_identity()
+
     try:
-        criteria = models.PlacementCriteria.get((models.PlacementCriteria.id == criteria_id)&(models.PlacementCriteria.user == current_user))
+        criteria = models.PlacementCriteria.get((models.PlacementCriteria.id == criteria_id)&(models.PlacementCriteria.user == current_user_id))
         criteria.update(**payload).execute()
         updated_criteria = model_to_dict(update_criteria)
         criteria_dict = model_to_dict(update_criteria)
