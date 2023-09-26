@@ -57,7 +57,7 @@ def delete_criteria(criteria_id):
         return jsonify(data={}, status={"code": 404, "message":"Criteria not found."})
     
     
-## UPDATE the placement criteria for a given user
+## UPDATE the placement criteria for the current  user
 @placementCriteria.route("/<int:criteria_id>", methods=["PUT"])
 @jwt_required
 def update_criteria(criteria_id):
@@ -65,8 +65,8 @@ def update_criteria(criteria_id):
     current_user_id = get_jwt_identity()
 
     try:
-        criteria = models.PlacementCriteria.get((models.PlacementCriteria.id == criteria_id)&(models.PlacementCriteria.user == current_user_id))
-        criteria.update(**payload).execute()
+        criteria = models.PlacementCriteria.get((models.PlacementCriteria.id == criteria_id)&(models.PlacementCriteria.user == current_user_id)) # query the criteria for the current user 
+        criteria.update(**payload).execute() # execute the update 
         updated_criteria = model_to_dict(update_criteria)
         criteria_dict = model_to_dict(update_criteria)
         return jsonify(data=criteria_dict, status={"code": 200, "message":"Criteria updated."})

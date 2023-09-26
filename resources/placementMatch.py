@@ -5,7 +5,7 @@ from models import Student, PlacementCriteria, PlacementMatch
 
 match = Blueprint('placement', __name__)
 
-#MATCH
+#MATCH a tsudent the criteria their data is most closely aligned to 
 @match.route("/", methods=["POST"])
 @jwt_required()
 def match_student():
@@ -26,7 +26,7 @@ def match_student():
         #create variables needed
         best_fit_match = None
         min_score_difference = float("inf")
-        
+        ## add in a check for  a screen score above max and default to strong instruction in the core classroom.
         for criteria in criteria_list:
             screener_diff = abs(student.screenerScore - criteria.screenerScoreMin)
             decoding_diff = abs(student.decodingScore - criteria.screenerScoreMin)
