@@ -9,7 +9,7 @@ placementCriteria = Blueprint("criteria", __name__)
 
 #INDEX - View all criteria created for a user
 @placementCriteria.route("/", methods=["GET"])
-@jwt_required #check to make sure a user is logged in
+@jwt_required() #check to make sure a user is logged in
 def get_all_critera():
     payload=request.get_json()
     current_user_id = get_jwt_identity()  
@@ -21,7 +21,7 @@ def get_all_critera():
     
 ## CREATE allows the user to add new placement criteria for an intervention
 @placementCriteria.route("/", methods=["POST"])
-@jwt_required
+@jwt_required()
 def create_criteria():
     payload = request.get_json()
     current_user_id = get_jwt_identity()
@@ -45,7 +45,7 @@ def create_criteria():
         
 ## DELETE
 @placementCriteria.route("/<int:criteria_id>", methods = ["DELETE"])
-@jwt_required
+@jwt_required()
 def delete_criteria(criteria_id):
     current_user_id = get_jwt_identity()
 
@@ -59,7 +59,7 @@ def delete_criteria(criteria_id):
     
 ## UPDATE the placement criteria for the current  user
 @placementCriteria.route("/<int:criteria_id>", methods=["PUT"])
-@jwt_required
+@jwt_required()
 def update_criteria(criteria_id):
     payload = request.get_json()
     current_user_id = get_jwt_identity()

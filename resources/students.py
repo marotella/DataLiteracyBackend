@@ -8,7 +8,7 @@ students = Blueprint('students', __name__)
 
 ## INDEX
 @students.route("/", methods=["GET"])
-@jwt_required
+@jwt_required()
 def get_all_students():
     # payload= request.get_json()
     current_user_id = get_jwt_identity()
@@ -22,7 +22,7 @@ def get_all_students():
 
 ## CREATE
 @students.route("/", methods=["POST"])
-@jwt_required
+@jwt_required()
 def create_student():
     payload = request.get_json()
     current_user_id = get_jwt_identity()
