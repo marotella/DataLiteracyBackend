@@ -40,7 +40,7 @@ login_manager = LoginManager(app)
 CORS(users, origins = ['http://localhost:3000'], supports_credentials=True)
 CORS(placementCriteria, origins = ['http://localhost:3000'], supports_credentials=True)
 CORS(students, origins = ['http://localhost:3000'], supports_credentials=True)
-CORS(match, origins = ['https://localhost:3000'], supports_credentials = True)
+CORS(match, origins = ['http://localhost:3000'], supports_credentials = True)
 
 app.register_blueprint(users, url_prefix='/api/v1/users')
 app.register_blueprint(students, url_prefix='/api/v1/students')
