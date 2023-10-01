@@ -59,10 +59,13 @@ def current_user():
     user_dict = model_to_dict(user)
     return jsonify(data=user_dict, status={"code": 200, "message": "Current user retrieved"})
 
-# ## LOGOUT
+## LOGOUT
 # @users.route("/logout", methods=["GET"])
-# @login_required
+# @jwt_required()
 # def logout():
-#     logout_user()
-#     return jsonify(data={}, status={"code": 200, "message": "Logout successful"})
+#     try:
+#         return jsonify(data={}, status={"code": 200, "message": "Logout successful"})
+#     except Exception as e:
+#         return jsonify(data={}, status={"code": 400, "message": str(e)})
+
  
