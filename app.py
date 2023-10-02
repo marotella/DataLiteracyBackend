@@ -19,6 +19,7 @@ app = Flask(__name__)
 app.secret_key= SECRET_KEY
 app.config['JWT_SECRET_KEY'] = 'cow_lou_azore'
 jwt = JWTManager(app)
+app.debug = True
 
 ##Database connection:
 @app.before_request
@@ -36,10 +37,11 @@ def after_request(response):
 
 login_manager = LoginManager(app)
 
+# CORS(app, origins=['http://localhost:3000'], supports_credentials=True, headers=['Authorization', 'Content-Type'], methods=['OPTIONS'])
 
 CORS(users, origins = ['http://localhost:3000'], supports_credentials=True)
 CORS(placementCriteria, origins = ['http://localhost:3000'], supports_credentials=True)
-CORS(students, origins = ['http://localhost:3000'], supports_credentials=True)
+CORS(students, origins = ['http://localhost:3000'], supports_credentials=True, headers=['Authorization'], methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 CORS(match, origins = ['http://localhost:3000'], supports_credentials = True)
 
 app.register_blueprint(users, url_prefix='/api/v1/users')

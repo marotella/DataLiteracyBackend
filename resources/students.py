@@ -10,8 +10,16 @@ students = Blueprint('students', __name__)
 @students.route("/", methods=["GET"])
 @jwt_required()
 def get_all_students():
-    # payload= request.get_json()
+    authorization_header = request.headers.get('Authorization')
+    app.logger.info(f'Authorization Header: {authorization_header}')
+    response = Flask.make_response()
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    payload= request.get_json()
     current_user_id = get_jwt_identity()
+    token = request.headers.get("Authorization")  # Get the token from the Authorization header
+
+    print(f"Token: {token}")
+    print(f"Current User ID: {current_user_id}")
     try:
         students = [model_to_dict(student) for student in models.Student.select().where(models.Student.user == current_user_id )]
         return jsonify(data=students, status={"code": 200, "message": "Successfully retrieved students"})
