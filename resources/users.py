@@ -28,6 +28,7 @@ def login():
         user=models.User.get(models.User.username == payload['username'])
         if user.password == payload["password"]:
             access_token = create_access_token(identity=user.id)
+            print(access_token)
             return jsonify(access_token=access_token, status={"code": 200, "message": "Login successful"})
         else:
             return jsonify(data={}, status={"code": 401, "message": "Invalid credentials."})

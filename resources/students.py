@@ -7,21 +7,16 @@ import models
 students = Blueprint('students', __name__)
 
 ## INDEX
-@students.route("/", methods=["GET"])
+@students.route("/getall", methods=["GET"])
 @jwt_required()
 def get_all_students():
-    authorization_header = request.headers.get('Authorization')
-    app.logger.info(f'Authorization Header: {authorization_header}')
-    response = Flask.make_response()
-    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-    payload= request.get_json()
     current_user_id = get_jwt_identity()
     token = request.headers.get("Authorization")  # Get the token from the Authorization header
-
     print(f"Token: {token}")
     print(f"Current User ID: {current_user_id}")
     try:
         students = [model_to_dict(student) for student in models.Student.select().where(models.Student.user == current_user_id )]
+        print(students)
         return jsonify(data=students, status={"code": 200, "message": "Successfully retrieved students"})
     except Exception as e:
         return jsonify(data={}, status={"code": 400, "message": str(e)})
@@ -29,12 +24,15 @@ def get_all_students():
     
 
 ## CREATE
-@students.route("/", methods=["POST"])
+@students.route("/create", methods=["POST"])
 @jwt_required()
 def create_student():
-    payload = request.get_json()
     current_user_id = get_jwt_identity()
+    token = request.headers.get("Authorization")  # Get the token from the Authorization header
+    print(f"Token: {token}")
+
     try:
+        payload = request.get_json()
         student = models.Student.create(
             user=current_user_id,  # Associate the student with the logged-in user
             studentID=payload['studentID'],

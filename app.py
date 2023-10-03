@@ -30,6 +30,15 @@ def before_request():
     
 @app.after_request
 def after_request(response):
+    allowed_origins = ['http://localhost:3000']
+    origin = request.headers.get('Origin')
+    
+    if origin in allowed_origins:
+        response.headers['Access-Control-Allow-Origin'] = origin
+    
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
     """Close to the database before each request."""
     if not g.db.is_closed():
         g.db.close()
@@ -37,11 +46,11 @@ def after_request(response):
 
 login_manager = LoginManager(app)
 
-# CORS(app, origins=['http://localhost:3000'], supports_credentials=True, headers=['Authorization', 'Content-Type'], methods=['OPTIONS'])
+CORS(app, origins=['http://localhost:3000'], supports_credentials=True, headers=['Authorization', 'Content-Type'], methods=['OPTIONS'])
 
 CORS(users, origins = ['http://localhost:3000'], supports_credentials=True)
 CORS(placementCriteria, origins = ['http://localhost:3000'], supports_credentials=True)
-CORS(students, origins = ['http://localhost:3000'], supports_credentials=True, headers=['Authorization'], methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+CORS(students, origins = ['http://localhost:3000'], supports_credentials=True, headers=['Authorization', 'authorization'], methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 CORS(match, origins = ['http://localhost:3000'], supports_credentials = True)
 
 app.register_blueprint(users, url_prefix='/api/v1/users')
