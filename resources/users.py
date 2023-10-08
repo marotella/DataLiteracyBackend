@@ -45,7 +45,6 @@ def register_user():
         print(user.__dict__)
         print(dir(user))
         print(model_to_dict(user), 'model to dict')
-        db.session.commit()
         user_dict = model_to_dict(user)
         return jsonify(data=user_dict, status={"code": 201, "message": "User successfully created"})
     except Exception as e:
