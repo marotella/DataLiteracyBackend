@@ -30,7 +30,6 @@ def create_student():
     current_user_id = get_jwt_identity()
     token = request.headers.get("Authorization")  # Get the token from the Authorization header
     print(f"Token: {token}")
-
     try:
         payload = request.get_json()
         student = models.Student.create(
@@ -44,8 +43,11 @@ def create_student():
             decodingScore=payload['decodingScore'],
             encodingScore=payload['encodingScore']
         )
+        print(student)
         student_dict = model_to_dict(student)
         return jsonify(data=student_dict, status={"code": 201, "message": "Successfully created student"})
+    except KeyError as e:
+        return jsonify(data={}, status={"code": 400, "message": f"Missing required field: {e}"})
     except Exception as e:
         return jsonify(data={}, status={"code": 400, "message": str(e)})
 
