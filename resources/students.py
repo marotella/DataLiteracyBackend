@@ -7,7 +7,7 @@ import models
 students = Blueprint('students', __name__)
 
 ## INDEX
-@students.route("/getall", methods=["GET"])
+@students.route("/", methods=["GET"])
 @jwt_required()
 def get_all_students():
     current_user_id = get_jwt_identity()
